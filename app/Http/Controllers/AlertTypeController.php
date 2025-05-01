@@ -12,7 +12,10 @@ class AlertTypeController extends Controller
      */
     public function index()
     {
-        //
+        $alertTypes = AlertType::get();
+        return response()->json([
+            'alert_types' => $alertTypes
+        ]);
     }
 
     /**
@@ -28,7 +31,21 @@ class AlertTypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required|string|max:255',
+            'icon' => 'nullable|string|max:1000',
+        ]);
+
+        $alertType = AlertType::create([
+            'name' => $request->name,
+            'icon' => $request->description,
+        ]);
+
+        return response()->json([
+            'alert_type' => $alertType,
+            'message' => 'Alert type created successfully',
+            'status' => 'success'
+        ]);
     }
 
     /**
@@ -52,7 +69,21 @@ class AlertTypeController extends Controller
      */
     public function update(Request $request, AlertType $alertType)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required|string|max:255',
+            'icon' => 'nullable|string|max:1000',
+        ]);
+
+        $alertType->update([
+            'name' => $request->name,
+            'icon' => $request->description,
+        ]);
+
+        return response()->json([
+            'alert_type' => $alertType,
+            'message' => 'Alert type updated successfully',
+            'status' => 'success'
+        ]);
     }
 
     /**
@@ -60,6 +91,11 @@ class AlertTypeController extends Controller
      */
     public function destroy(AlertType $alertType)
     {
-        //
+        $alertType->delete();
+
+        return response()->json([
+            'message' => 'Alert type deleted successfully',
+            'status' => 'success'
+        ]);
     }
 }
