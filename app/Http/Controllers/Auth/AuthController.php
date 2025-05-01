@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -161,7 +162,9 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'required|string|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'address' => 'required|string|max:500', // Added address validation
+            'address' => 'required|string|max:500',
+            'latitude' => 'required|numeric|between:-90,90', // Latitude for coordinates
+            'longitude' => 'required|numeric|between:-180,180', // Longitude for coordinates
         ]);
 
         if ($validator->fails()) {
@@ -174,7 +177,8 @@ class AuthController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
-            'address' => $request->address, // Save the address
+            'address' => $request->address,
+            'coordinates' => DB::raw("ST_GeomFromText('POINT({$request->longitude} {$request->latitude})')"), // Save geometry
         ]);
 
         // Generate a random OTP but do not send it yet
