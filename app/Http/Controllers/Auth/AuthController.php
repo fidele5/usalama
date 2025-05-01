@@ -158,7 +158,8 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'full_name' => 'required|string|max:255',
+            'username' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'required|string|unique:users',
             'password' => 'required|string|min:8|confirmed',
@@ -171,9 +172,24 @@ class AuthController extends Controller
             return response()->json(['error' => $validator->errors()], 422);
         }
 
+        // Check if the username is already taken
+        if (User::where('username', $request->username)->exists()) {
+            // Generate alternative username suggestions
+            $suggestions = [];
+            for ($i = 1; $i <= 3; $i++) {
+                $suggestions[] = $request->username . rand(100, 999); // Append random numbers to the username
+            }
+
+            return response()->json([
+                'error' => 'Username is already taken.',
+                'suggestions' => $suggestions
+            ], 409);
+        }
+
         // Create the user
         $user = User::create([
-            'name' => $request->name,
+            'username' => $request->username,
+            'full_name' => $request->full_name,
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
