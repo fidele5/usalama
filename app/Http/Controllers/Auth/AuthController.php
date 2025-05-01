@@ -150,4 +150,35 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Phone number confirmed successfully.'], 200);
     }
+
+    public function register(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'phone' => 'required|string|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'address' => 'required|string|max:500', // Added address validation
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+
+        // Create the user
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'password' => Hash::make($request->password),
+            'address' => $request->address, // Save the address
+        ]);
+
+        // Generate a random OTP but do not send it yet
+        $otp = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+        $user->otp = $otp;
+        $user->save();
+
+        return response()->json(['message' => 'User registered successfully. Please confirm your phone number.'], 201);
+    }
 }
