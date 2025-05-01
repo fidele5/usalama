@@ -27,6 +27,16 @@ class Alert extends Model
         return $this->hasMany(AlertResponse::class);
     }
 
+    /**
+     * Get all of the medias for the Alert
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function medias()
+    {
+        return $this->hasMany(AlertMedia::class);
+    }
+
     protected static function boot()
     {
         parent::boot();
