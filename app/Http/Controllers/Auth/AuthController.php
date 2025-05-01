@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -91,7 +92,8 @@ class AuthController extends Controller
         $user->save();
 
         // Send OTP to the user's phone (implement SMS sending logic here)
-        // Example: SmsService::send($user->phone, "Your OTP is $otp");
+        $smsService = new SmsService();
+        $smsService->send($user->phone, "Your OTP is $user->otp");
 
         return response()->json(['message' => 'OTP sent successfully'], 200);
     }
@@ -121,7 +123,8 @@ class AuthController extends Controller
         }
 
         // Send OTP to the user's phone (implement SMS sending logic here)
-        // Example: SmsService::send($user->phone, "Your OTP is $user->otp");
+        $smsService = new SmsService();
+        $smsService->send($user->phone, "Your OTP is $user->otp");
 
         return response()->json(['message' => 'OTP sent successfully.'], 200);
     }
