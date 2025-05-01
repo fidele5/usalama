@@ -45,4 +45,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function assignedResponses()
+    {
+        return $this->hasMany(AlertResponse::class, 'user_id');
+    }
+
+    public function responderTeams()
+    {
+        return $this->belongsToMany(Responder::class, 'user_responder')
+                ->withPivot('role');
+    }
 }

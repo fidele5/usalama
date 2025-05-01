@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('alert_types', function (Blueprint $table) {
+        Schema::create('zones', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('icon')->nullable();
-            $table->softDeletes();
+            $table->geometry('boundaries'); // Spatial data type for storing polygon boundaries
+            $table->enum('priority_level', ['low', 'medium', 'high']);
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->spatialIndex('boundaries'); // Index spatial
         });
     }
 
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('alert_types');
+        Schema::dropIfExists('zones');
     }
 };

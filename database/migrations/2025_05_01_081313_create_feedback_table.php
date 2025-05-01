@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('alert_types', function (Blueprint $table) {
+        Schema::create('feedback', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('icon')->nullable();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('alert_id')->constrained();
+            $table->unsignedTinyInteger('rating');
+            $table->text('comment')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('alert_types');
+        Schema::dropIfExists('feedback');
     }
 };

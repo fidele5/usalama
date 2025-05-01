@@ -11,18 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_alerts', function (Blueprint $table) {
+        Schema::create('alert_media', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('alert_id');
-            $table->boolean('is_notified')->default(false);
-            $table->timestamps();
-            $table->softDeletes();
-        });
-
-        Schema::table('user_alerts', function (Blueprint $table) {
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
+            $table->string('file_path');
+            $table->string('file_type'); // 'image', 'video'
             $table->foreign('alert_id')->references('id')->on('alerts')->onDelete('restrict');
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_alerts');
+        Schema::dropIfExists('alert_media');
     }
 };

@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('alert_types', function (Blueprint $table) {
+        Schema::create('responder_teams', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('responder_id')->constrained();
             $table->string('name');
-            $table->string('icon')->nullable();
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('alert_types');
+        Schema::dropIfExists('responder_teams');
     }
 };

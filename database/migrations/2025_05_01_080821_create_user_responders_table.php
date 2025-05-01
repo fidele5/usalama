@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('alert_types', function (Blueprint $table) {
+        Schema::create('user_responders', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('icon')->nullable();
-            $table->softDeletes();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('responder_id')->constrained();
+            $table->enum('role', ['member', 'leader'])->default('member');
+            $table->softDeletes(); // Soft delete for historical data retention
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('alert_types');
+        Schema::dropIfExists('user_responders');
     }
 };
