@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Casts\GeometryCast;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -51,6 +52,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'coordinates' => GeometryCast::class,
         ];
     }
 
@@ -65,7 +67,7 @@ class User extends Authenticatable
                 ->withPivot('role');
     }
 
-    protected function coordinates(): Attribute
+    protected function coordinates()
     {
         return Attribute::make(
             get: fn () => [
