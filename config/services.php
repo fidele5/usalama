@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'bulksms' => [
+        'username' => env('BULKSMS_USERNAME'),
+        'password' => env('BULKSMS_PASSWORD'),
+        'api_url' => env('BULKSMS_API_URL', 'https://api.bulksms.com/v1/messages'),
+        'max_retries' => 3,
+        'chunk_size' => 100, // Messages per batch
+    ],
 ];

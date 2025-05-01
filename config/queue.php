@@ -72,6 +72,14 @@ return [
             'after_commit' => false,
         ],
 
+        'sms' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'sms_queue',
+            'retry_after' => 300,
+            'block_for' => 5,
+        ],
+
     ],
 
     /*
@@ -108,5 +116,4 @@ return [
         'database' => env('DB_CONNECTION', 'sqlite'),
         'table' => 'failed_jobs',
     ],
-
 ];

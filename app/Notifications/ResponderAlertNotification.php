@@ -2,20 +2,19 @@
 
 namespace App\Notifications;
 
-use App\Models\Alert;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewAlertNotification extends Notification
+class ResponderAlertNotification extends Notification
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(public Alert $alert)
+    public function __construct()
     {
         //
     }
@@ -27,7 +26,7 @@ class NewAlertNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['sms', 'database'];
+        return ['mail'];
     }
 
     /**
@@ -36,8 +35,8 @@ class NewAlertNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line("New {$this->alert->alertType->name} alert near you")
-            ->action('Notification Action', url("/respond/alerts/{$this->alert->public_id}"))
+            ->line('The introduction to the notification.')
+            ->action('Notification Action', url('/'))
             ->line('Thank you for using our application!');
     }
 
@@ -49,9 +48,7 @@ class NewAlertNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'alert_id' => $this->alert->public_id,
-            'message' => "New {$this->alert->alertType->name} alert near you",
-            'url' => "/respond/alerts/{$this->alert->public_id}"
+            //
         ];
     }
 }

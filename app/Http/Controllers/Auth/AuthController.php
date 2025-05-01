@@ -93,7 +93,7 @@ class AuthController extends Controller
 
         // Send OTP to the user's phone (implement SMS sending logic here)
         $smsService = new SmsService();
-        $smsService->send($user->phone, "Your OTP is $user->otp");
+        $smsService->sendSingle($user->phone, "Your OTP is $user->otp");
 
         return response()->json(['message' => 'OTP sent successfully'], 200);
     }
@@ -124,7 +124,7 @@ class AuthController extends Controller
 
         // Send OTP to the user's phone (implement SMS sending logic here)
         $smsService = new SmsService();
-        $smsService->send($user->phone, "Your OTP is $user->otp");
+        $smsService->sendSingle($user->phone, "Your OTP is $user->otp");
 
         return response()->json(['message' => 'OTP sent successfully.'], 200);
     }

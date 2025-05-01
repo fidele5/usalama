@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alert;
+use App\Models\AlertType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class AlertController extends Controller
      */
     public function index()
     {
-        $alerts = Alert::with(['alertType', 'media', 'user'])->paginate(10); // Paginate results
+        $alerts = Alert::with(['alertType', 'medias', 'user'])->paginate(10); // Paginate results
         return response()->json([
             'alerts' => $alerts
         ]);
@@ -24,7 +25,7 @@ class AlertController extends Controller
     public function getAlertTypes()
     {
         return response()->json([
-            'types' => \App\Models\AlertType::all()
+            'types' => AlertType::get()
         ]);
     }
 
@@ -57,7 +58,7 @@ class AlertController extends Controller
                 'user_id' => Auth::user()->id,
                 'alert_type_id' => $validated['alert_type_id'],
                 'description' => $validated['description'],
-                'location' => DB::raw("POINT({$validated['longitude']}, {$validated['latitude']})"),
+                'location' => DB::raw("ST_GeomFromText('POINT({$validated['longitude']} {$validated['latitude']})')"),
                 'address' => $validated['address'],
                 'contact_phone' => $request->input('contact_phone', null),
             ]);
@@ -133,7 +134,7 @@ class AlertController extends Controller
                 'alert_type_id' => $validated['alert_type_id'] ?? $alert->alert_type_id,
                 'description' => $validated['description'] ?? $alert->description,
                 'location' => isset($validated['latitude'], $validated['longitude'])
-                    ? DB::raw("POINT({$validated['longitude']}, {$validated['latitude']})")
+                    ? DB::raw("ST_GeomFromText('POINT({$validated['longitude']} {$validated['latitude']})')")
                     : $alert->location,
                 'address' => $validated['address'] ?? $alert->address,
                 'contact_phone' => $request->input('contact_phone', $alert->contact_phone),
