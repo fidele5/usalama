@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Alert;
 use App\Models\AlertType;
+use App\Services\AlertService;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -55,7 +57,7 @@ class AlertController extends Controller
 
         try {
             $alert = Alert::create([
-                'user_id' => Auth::user()->id,
+                'user_id' => 1,
                 'alert_type_id' => $validated['alert_type_id'],
                 'description' => $validated['description'],
                 'location' => DB::raw("ST_GeomFromText('POINT({$validated['longitude']} {$validated['latitude']})')"),
@@ -196,5 +198,20 @@ class AlertController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function sendAlert($id, AlertService $alertService){
+        $alert = Alert::where('public_id', '1281b6b0-f65f-4f7d-8259-be8cdc927108')->first();
+        //$alertService->notifyNearbyUsers($alert);
+        $smsService = new SmsService();
+        $smsService->sendSingle(
+            "+243812850008",
+            'Test message',
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Alert sent successfully.'
+        ], 200);
     }
 }

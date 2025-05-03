@@ -9,6 +9,7 @@ use App\Models\Responder;
 use App\Models\User;
 use App\Notifications\NewAlertNotification;
 use App\Notifications\ResponderAlertNotification;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 
 class AlertService
@@ -25,30 +26,35 @@ class AlertService
     /**
      * Handle the Alert "created" event.
      */
-    protected function notifyNearbyUsers(Alert $alert)
+    public function notifyNearbyUsers(Alert $alert)
     {
-        $recipients = User::whereNotNull('phone_verified_at')
-            ->where('id', '!=', $alert->user_id)
-            ->whereRaw(
-                "ST_Distance_Sphere(
-                    coordinates, 
-                    ST_GeomFromText(?, 4326)
-                ) <= 10000", // 10km in meters
-                [$alert->location->toWkt()]
-            )
-            ->pluck('phone')
+        $recipients = User::
+            // ->where('id', '!=', $alert->user_id)
+            // ->whereRaw(
+            //     "ST_Distance_Sphere(
+            //         coordinates,
+            //         ST_GeomFromText(?, 4326)
+            //     ) <= 10000", // 10km in meters
+            //     [
+            //         DB::selectOne(
+            //             "SELECT ST_AsText(location) as wkt FROM alerts WHERE id = ?",
+            //             [$alert->id]
+            //         )->wkt
+            //     ]
+            // )
+            pluck('phone')
             ->toArray();
 
             //$message = $this->compileSmsTemplate($alert);
             $message = "Mon super alert";
 
-        if (!empty($recipients)) {
+        //if (!empty($recipients)) {
             SendSmsAlert::dispatch(
                 $recipients,
                 $message,
                 'emergency_alert'
             )->onQueue('sms');
-        }
+        //}
     }
 
     public function dispatchNotifications(Alert $alert): void

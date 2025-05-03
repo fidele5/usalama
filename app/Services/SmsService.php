@@ -16,9 +16,9 @@ class SmsService
      */
     public function __construct()
     {
-        $this->username = env('BULKSMS_USERNAME'); // Set your BulkSMS username in .env
-        $this->password = env('BULKSMS_PASSWORD'); // Set your BulkSMS password in .env
-        $this->apiUrl = env('BULKSMS_API_URL', 'https://api.bulksms.com/v1/send'); // Set your BulkSMS API URL in .env
+        $this->username = config('services.bulksms.username'); // Set your BulkSMS username in .env
+        $this->password = config('services.bulksms.password'); // Set your BulkSMS password in .env
+        $this->apiUrl = env('BULKSMS_API_URL', 'https://api.bulksms.com/v1/messages?auto-unicode=true&longMessageMaxParts=30'); // Set your BulkSMS API URL in .env
     }
 
     /**
@@ -33,6 +33,8 @@ class SmsService
                 ->post($this->apiUrl, [
                     'to' => $phone,
                     'body' => $message,
+                    'routingGroup' => "ECONOMY",
+                    'encoding' => "UNICODE"
                 ]);
 
             if ($response->successful()) {
@@ -71,6 +73,8 @@ class SmsService
                         ->post($this->apiUrl, [
                             'to' => $phone,
                             'body' => $message,
+                            'routingGroup' => "ECONOMY",
+                            'encoding' => "UNICODE"
                         ])
                 )
             );

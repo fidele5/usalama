@@ -36,9 +36,11 @@ class AlertTypeController extends Controller
             'icon' => 'nullable|string|max:1000',
         ]);
 
+        
+
         $alertType = AlertType::create([
             'name' => $request->name,
-            'icon' => $request->description,
+            'icon' => $request->icon,
         ]);
 
         return response()->json([
@@ -76,7 +78,7 @@ class AlertTypeController extends Controller
 
         $alertType->update([
             'name' => $request->name,
-            'icon' => $request->description,
+            'icon' => $request->icon,
         ]);
 
         return response()->json([

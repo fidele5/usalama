@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\GeometryCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -13,6 +14,13 @@ class Alert extends Model
         'public_id', 'user_id', 'alert_type_id', 'description', 
         'location', 'address', 'status', 'priority'
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'location' => GeometryCast::class,
+        ];
+    }
 
     public function user() {
         return $this->belongsTo(User::class);

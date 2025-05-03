@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Services\SmsService;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -12,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class SendSmsAlert implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use InteractsWithQueue, Queueable, SerializesModels;
 
     public function __construct(
         public array $recipients,
