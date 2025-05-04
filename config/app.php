@@ -123,4 +123,7 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'aliases' => array(
+        'Geocoder' => Spatie\Geocoder\Facades\Geocoder::class,
+    )
 ];
