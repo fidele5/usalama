@@ -71,10 +71,10 @@ class SmsService
                     $pool->as($phone)
                         ->withBasicAuth($this->username, $this->password)
                         ->post($this->apiUrl, [
-                            'to' => $phone,
+                            'to' => "243". (int) $phone,
                             'body' => $message,
                             'routingGroup' => "PREMIUM",
-                            'encoding' => "UNICODE"
+                            'encoding' => "TEXT"
                         ])
                 )
             );

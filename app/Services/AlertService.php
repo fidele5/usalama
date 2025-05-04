@@ -9,8 +9,10 @@ use App\Models\Responder;
 use App\Models\User;
 use App\Notifications\NewAlertNotification;
 use App\Notifications\ResponderAlertNotification;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
+use Spatie\Geocoder\Geocoder;
 
 class AlertService
 {
@@ -45,16 +47,15 @@ class AlertService
             pluck('phone')
             ->toArray();
 
-            //$message = $this->compileSmsTemplate($alert);
-            $message = "Mon super alert";
+            $message = $this->compileSmsTemplate($alert);
 
-        //if (!empty($recipients)) {
+        if (!empty($recipients)) {
             SendSmsAlert::dispatch(
                 $recipients,
                 $message,
                 'emergency_alert'
             )->onQueue('sms');
-        //}
+        }
     }
 
     public function dispatchNotifications(Alert $alert): void
@@ -91,9 +92,21 @@ class AlertService
 
     private function compileSmsTemplate(Alert $alert): string
     {
-        return "EMERGENCY: {$alert->alertType->name}\n"
-            . "Location: {$alert->address}\n"
-            . "Time: {$alert->created_at->format('H:i')}\n"
-            . "Details: ".route('alerts.show', $alert->id);
+        $client = new Client();
+        $geocoder = new Geocoder($client);
+        $address = $alert->address;
+        $addressLink = "https://maps.google.com/?q=$address";
+        $contactPhone = $alert->contact_phone ? $alert->contact_phone : $alert->user->phone;
+        $geocoder->setApiKey(config('geocoder.key'));
+        if (!is_null($alert->location) && !is_null($alert->location["lat"]) && !is_null($alert->location["lng"])) {
+            $googleAddres =  $geocoder->getAddressForCoordinates($alert->location["lat"], $alert->location["lng"]);
+            $address = $googleAddres['formatted_address'];
+            $addressLink = "https://maps.google.com/?q=".$googleAddres["lat"] . ",".$googleAddres["lng"];
+        }
+        
+        return 'Alert: ' . $alert->description . "\n" .
+            "Adresse: $address \n" .
+            "Contact: $contactPhone \n" .
+            "Google Address: $addressLink \n";
     }
 }
