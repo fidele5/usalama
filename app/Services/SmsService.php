@@ -33,7 +33,7 @@ class SmsService
                 ->post($this->apiUrl, [
                     'to' => $phone,
                     'body' => $message,
-                    'routingGroup' => "ECONOMY",
+                    'routingGroup' => "PREMIUM",
                     'encoding' => "UNICODE"
                 ]);
 
@@ -73,7 +73,7 @@ class SmsService
                         ->post($this->apiUrl, [
                             'to' => $phone,
                             'body' => $message,
-                            'routingGroup' => "ECONOMY",
+                            'routingGroup' => "PREMIUM",
                             'encoding' => "UNICODE"
                         ])
                 )
